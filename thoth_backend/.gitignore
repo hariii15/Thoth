@@ -1,0 +1,63 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+/.venv_new/
+/.venv_new/
+.env # Often includes environment variables from 'python-dotenv'
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest
+.pytest_cache/
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+
+# Logs
+*.log
+
+# Database files (CRUCIAL for local database files, e.g., SQLite)
+db.sqlite3
+*.sqlite3
+*.db
+/data/*.db
+
+# Uploaded files (if your backend handles file uploads and stores them locally)
+/media/ # Common for Django media uploads
+/static/ # If generated/collected locally
+
+# IDE / Editor specific files
+.DS_Store
+.vscode/
+.idea/
+.flaskenv # Specific to Flask projects
+
+# Jupyter Notebook files
+.ipynb_checkpoints/

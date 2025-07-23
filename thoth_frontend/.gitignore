@@ -1,0 +1,69 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage            # Jest/Vitest coverage reports
+/.nyc_output
+/test-results.xml
+
+# Production / Build outputs (standard web build artifacts)
+/build               # Typical web app build output if you have a separate web renderer build step
+/dist                # Common for JavaScript builds
+/out                 # Often used by packaging tools for intermediate build files or final packages
+
+# Electron Specific Build Outputs (CRUCIAL!)
+/out/                # Electron Forge output directory (common)
+/release/            # Another common output directory name
+/dist_electron/      # Some other Electron build setups might use this
+/electron-builder/   # Temporary directories for electron-builder
+
+# Packaged applications and installers
+*.exe                # Windows executable
+*.dmg                # macOS Disk Image
+*.app/               # macOS application bundle (might be inside /out or /dist)
+*.deb                # Debian/Ubuntu package
+*.rpm                # Red Hat/Fedora package
+*.snap               # Snap package
+*.flatpak            # Flatpak package
+*.AppImage           # Linux AppImage
+*.zip                # Zipped archives of releases
+*.tar.gz             # GZipped archives of releases
+
+# Crash Reports
+/crash_reports/      # If Electron is configured to save crash dumps locally
+
+# Miscellaneous
+.DS_Store            # macOS specific
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables (if you have frontend-specific .env files)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories and files
+.vscode              # If you prefer to keep frontend specific VS Code settings out of the root .vscode/
+*.sublime-project
+*.sublime-workspace
+.idea/
+
+# Dotfiles specific to yarn/npm
+.npmrc
+.yarnrc
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.yml
+.pnp.*
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

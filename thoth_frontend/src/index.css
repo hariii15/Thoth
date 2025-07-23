@@ -1,0 +1,788 @@
+/* ===================================================================
+   Gemini Inspired UI Theme (Dark Mode)
+   A modern, clean, and adaptable CSS file for building AI interfaces.
+   =================================================================== */
+
+/* -------------------------------------------------------------------
+   1. CSS Variables (Root Configuration)
+   -------------------------------------------------------------------
+   - Defines the core color palette for easy customization.
+   - Sets up global typography and layout variables.
+*/
+:root {
+    /* Primary Color Palette (Modern Blue/Gray) */
+    --primary-color: #2563eb; /* Modern blue for accents */
+    --primary-color-light: #3b82f6; /* Lighter blue for hover states */
+    --primary-color-dark: #1e40af; /* Darker blue for active states */
+
+    /* Dark Theme Color Palette - Even darker and more modern */
+    --background-color: #0a0a0f; /* Deeper, richer dark background */
+    --surface-color: #15151c; /* Slightly lighter for cards */
+    --surface-hover: #232336; /* For hover states */
+    --border-color: #232336; /* Subtle border color */
+
+    /* Accent & Utility Colors */
+    --accent-color: #60a5fa; /* Modern blue accent */
+    --success-color: #3fb950;
+    --error-color: #f85149;
+    --warning-color: #d29922;
+
+    /* Text Colors for Dark Theme */
+    --text-primary: #e5e7eb; /* Soft white for primary text */
+    --text-secondary: #7d8590;
+    --text-tertiary: #484f58;
+    --text-on-primary: #ffffff;
+
+    /* Font & Typography - Claude-inspired */
+    --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-family-claude: 'ui-serif', Georgia, 'Times New Roman', serif;
+    --font-size-base: 20px;
+    --line-height-base: 1.6;
+
+    /* Border & Shadow - Modern and subtle */
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --box-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --box-shadow-input: 0 0 0 1px var(--border-color);
+
+    /* Transitions */
+    --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* -------------------------------------------------------------------
+   2. Global Styles & Resets
+   ------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--text-primary);
+    background-color: var(--background-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Override body font for chat messages specifically */
+body .chat-message,
+body .chat-message.user,
+body .chat-message.ai {
+    font-family: 'Smooch Sans', 'Bitcount Prop Single', monospace !important;
+}
+
+/* -------------------------------------------------------------------
+   3. Color Utility Classes
+   ------------------------------------------------------------------- */
+
+/* Background Colors */
+.bg-primary { background-color: var(--primary-color); }
+.bg-secondary { background-color: var(--surface-color); } /* Changed to surface */
+.bg-accent { background-color: var(--accent-color); }
+.bg-dark { background-color: var(--background-color); }
+
+
+/* Text Colors */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-on-primary { color: var(--text-on-primary); }
+.text-accent { color: var(--accent-color); }
+.text-success { color: var(--success-color); }
+.text-error { color: var(--error-color); }
+
+/* Border Colors */
+.border-primary { border-color: var(--primary-color); }
+.border-secondary { border-color: var(--border-color); }
+
+/* -------------------------------------------------------------------
+   4. Component Styles
+   ------------------------------------------------------------------- */
+
+/* --- Buttons --- */
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+    transition: var(--transition-base);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-on-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color-light);
+}
+
+.btn-primary:active {
+    background-color: var(--primary-color-dark);
+}
+
+.btn-secondary {
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: #374151; /* Slightly lighter surface color */
+    border-color: var(--primary-color-light);
+}
+
+/* --- Form Inputs --- */
+.form-input {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-family: var(--font-family-sans);
+    color: var(--text-primary);
+    background-color: var(--surface-color);
+    background-clip: padding-box;
+    border-radius: var(--border-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
+.form-input:focus {
+    outline: 0;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(138, 43, 226, 0.25);
+}
+
+textarea.form-input {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* --- Cards --- */
+
+.card {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    transition: var(--transition-base);
+}
+
+.card:hover {
+    box-shadow: var(--box-shadow-lg);
+    border-color: #4b5563;
+    transform: translateY(-3px);
+}
+
+/* --- Container & Layout --- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+/* -------------------------------------------------------------------
+   5. Typography
+   ------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text-primary);
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+
+p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: var(--transition-base);
+}
+
+a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+/* -------------------------------------------------------------------
+   6. AI Chat Interface - Modern ChatGPT/Claude Style
+   ------------------------------------------------------------------- */
+
+/* Full screen chat layout */
+.ai-agent-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    position: relative; /* for blob background */
+    overflow: hidden;
+}
+
+.ai-agent-container::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle at center, rgba(96,165,250,0.2), transparent 70%);
+    filter: blur(150px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ai-agent-container::after {
+    content: '';
+    position: absolute;
+    bottom: 15%;
+    right: -8%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle at center, rgba(138,43,226,0.15), transparent 70%);
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ai-agent-card {
+    position: relative;
+    z-index: 1; /* ensure content sits above blob */
+    flex: 1;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    max-width: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header styles */
+.ai-agent-header {
+    padding: 2.5rem 2rem 1.5rem 2rem;
+    border-bottom: none;
+    background: none;
+    text-align: center;
+    box-shadow: none;
+}
+
+.ai-agent-title {
+    display: none;
+}
+
+.ai-agent-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: 0;
+    font-family: var(--font-family-sans);
+    opacity: 0.8;
+    background: none;
+    box-shadow: none;
+}
+
+/* Welcome message - Claude style */
+.welcome-message {
+    display: flex;
+    flex-direction: column; /* stack logo and text vertically */
+    align-items: center;
+    justify-content: center;
+    height: 40vh;
+    font-family: 'Bitcount Prop Single', monospace;
+    font-size: 4rem;
+    font-weight: 400;
+    color: #fff;
+    text-align: center;
+    margin: 0 auto;
+    opacity: 0.95;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #60a5fa 0%, #fff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 24px rgba(96,165,250,0.15), 0 1px 0 #fff;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.welcome-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+/* Chat container */
+.chat-container {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    background: none;
+    border: none;
+    box-shadow: none;
+    word-spacing: normal;
+    letter-spacing: normal;
+}
+
+/* --- Improved Chat Message Bubbles --- */
+.chat-message {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  max-width: 80%;
+  position: relative;
+}
+.chat-message.user {
+  flex-direction: row-reverse;
+  align-self: flex-end;
+  text-align: right;
+}
+.chat-message.ai {
+  align-self: flex-start;
+  text-align: left;
+}
+.chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 2px 8px 0 rgba(60, 60, 80, 0.10);
+  border: 2px solid var(--surface-hover);
+}
+.chat-bubble {
+  background: var(--surface-color);
+  color: var(--text-primary);
+  border-radius: 18px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 12px 0 rgba(60, 60, 80, 0.08);
+  font-size: 1.55rem;
+  font-family: 'Smooch Sans', 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  max-width: 100%;
+  word-break: break-word;
+  border: 1px solid var(--border-color);
+  transition: background 0.2s, border 0.2s;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+.chat-message.user .chat-bubble {
+  background: #181820; /* darker matte gray */
+  color: var(--text-on-primary);
+  border: 1.5px solid #fff;
+  border-radius: 28px; /* fully rounded, no pointed corners */
+  box-shadow: 0 2px 16px 0 rgba(60, 60, 80, 0.10);
+  font-weight: 500;
+  padding: 1.1rem 1.6rem;
+  margin-bottom: 0.1rem;
+  transition: border 0.2s, box-shadow 0.2s;
+  background-image: none;
+}
+.chat-message.ai .chat-bubble {
+  background: none;
+  color: var(--text-primary);
+  border: none;
+  box-shadow: none;
+  border-radius: 18px;
+  padding: 1rem 1.25rem;
+}
+
+/* Subtle divider between messages */
+.chat-message + .chat-message {
+  margin-top: 0.5rem;
+}
+
+/* Additional specific selectors to ensure font override */
+#chatContainer .chat-message,
+#chatContainer .chat-message.user,
+#chatContainer .chat-message.ai,
+.chat-container .chat-message,
+.chat-container .chat-message.user,
+.chat-container .chat-message.ai {
+    font-family: 'Smooch Sans', 'Bitcount Prop Single', monospace !important;
+    font-weight: 300 !important;
+}
+
+/* Ensure all text inside chat messages uses the correct font */
+.chat-message *,
+.chat-message.user *,
+.chat-message.ai * {
+    font-family: inherit !important;
+    font-weight: inherit !important;
+}
+
+/* ChatGPT-style input form */
+.ai-form {
+    position: sticky;
+    bottom: 0;
+    padding: 1.5rem 2rem 2rem 2rem;
+    background: linear-gradient(transparent, var(--background-color) 20%);
+}
+
+.ai-input-container {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.ai-input {
+    width: 100%;
+    padding: 1.25rem 3.5rem 1.25rem 1.5rem; /* increased vertical and horizontal padding */
+    font-size: 1.1rem; /* slightly larger font */
+    line-height: 1.6;
+    background: #3b3b3b; /* Subtle gray background */
+    color: var(--text-primary);
+    border: 1px solid var(--border-color); /* subtle border */
+    border-radius: 28px; /* more rounded corners */
+    box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.3); /* subtle inset shadow */
+    min-height: 48px; /* increased height */
+    max-height: 250px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    resize: none;
+    overflow-y: hidden;
+}
+
+.ai-input:focus {
+    outline: none;
+    border-color: var(--border-color);
+    box-shadow: none;
+}
+
+/* Send button */
+.send-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px; /* larger click area */
+    height: 40px;
+    border-radius: 50%;
+    background-color: gray; /* theme accent */
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    opacity: 0.9;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.send-button:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    opacity: 1;
+}
+
+.send-button:active {
+    transform: translateY(-50%) scale(0.95);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: translateY(-50%) scale(1);
+    box-shadow: none;
+}
+
+.send-button svg {
+    width: 20px; /* larger icon */
+    height: 20px;
+    color: var(--text-on-primary);
+}
+
+/* Scrollbar styling */
+.chat-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* Citations and Sources - Perplexity style */
+.citation-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    transition: background-color var(--transition-fast);
+}
+
+.citation-link:hover {
+    background-color: rgba(96, 165, 250, 0.1);
+    text-decoration: none;
+}
+
+.sources-section {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(36, 41, 54, 0.85);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px 0 rgba(60, 60, 80, 0.10);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 90%;
+}
+.sources-section h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.source-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1rem;
+  background: none;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  transition: background 0.15s;
+}
+.source-item:hover {
+  background: rgba(96, 165, 250, 0.08);
+}
+.source-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7em;
+  height: 1.7em;
+  background: var(--primary-color);
+  color: #fff;
+  font-size: 0.95em;
+  font-weight: 700;
+  border-radius: 50%;
+  margin-right: 0.3em;
+  box-shadow: 0 1px 4px 0 rgba(60, 60, 80, 0.10);
+}
+.source-link {
+  color: var(--accent-color);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s;
+  word-break: break-all;
+}
+.source-link:hover {
+  color: var(--primary-color-light);
+  text-decoration: underline;
+}
+.citation-link {
+  color: var(--accent-color);
+  font-size: 0.95em;
+  font-weight: 600;
+  text-decoration: none;
+  margin: 0 0.1em;
+  vertical-align: super;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.citation-link:hover {
+  color: var(--primary-color-light);
+  text-decoration: underline;
+}
+
+/* Chat content wrapper */
+.chat-content {
+    width: 100%;
+}
+
+/* Memory Dialog Styles */
+.memory-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.memory-dialog {
+  background: linear-gradient(135deg, #1a1a1f 0%, #2a2a35 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: slideUp 0.3s ease-out;
+}
+
+.memory-dialog-header h3 {
+  margin: 0 0 24px 0;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.memory-dialog-content {
+  margin-bottom: 32px;
+}
+
+.memory-dialog-content p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.memory-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 16px 0;
+  font-style: italic;
+}
+
+.memory-dialog-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.memory-btn-cancel,
+.memory-btn-confirm {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+}
+
+.memory-btn-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.memory-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 1);
+}
+
+.memory-btn-confirm {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.memory-btn-confirm:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* -------------------------------------------------------------------
+   7. Miscellaneous Styles
+   ------------------------------------------------------------------- */
+
+/* Hide the default scrollbar, but allow scrolling */
+.no-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer and Edge */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thoth AI Agent - Gemini Inspired</title>
+    <link rel="stylesheet" href="./src/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&family=Smooch+Sans:wght@300&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="ai-agent-container">
+      <div class="ai-agent-card">
+        
+        <!-- Welcome message -->
+        <div id="welcomeMessage" class="welcome-message">
+          <img src="./src/assets/Adobe Express - file.png" alt="Thoth Logo" class="welcome-logo" />
+          Welcome Hari
+        </div>
+
+        <!-- Chat container -->
+        <div id="chatContainer" class="chat-container"></div>
+
+        <!-- Input form -->
+        <form id="aiForm" class="ai-form">
+          <!-- Use Gemini-style input container -->
+          <div class="chat-input-container">
+            <textarea 
+              id="promptInput" 
+              class="chat-textarea" 
+              placeholder="Ask Thoth" 
+              rows="1"
+              autofocus 
+            ></textarea>
+            <button type="submit" class="send-button" id="sendButton">
+              <svg id="sendIcon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+              <svg id="stopIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                <rect x="6" y="6" width="12" height="12" rx="3"/>
+              </svg>
+            </button>
+            <div class="icon-row"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module">
+      import { sendPromptWithMemory } from './src/aiAgent.ts';
+
+      const form = document.getElementById('aiForm');
+      const input = document.getElementById('promptInput');
+      const chatContainer = document.getElementById('chatContainer');
+      const welcomeMessage = document.getElementById('welcomeMessage');
+      const sendButton = document.getElementById('sendButton');
+      const sendIcon = document.getElementById('sendIcon');
+      const stopIcon = document.getElementById('stopIcon');
+
+      let chatHistory = "";
+      let abortController = null;
+      let isWaiting = false;
+
+      // Auto-resize textarea
+      input.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+      });
+
+      // Function to format citations in Perplexity style
+      function formatResponseWithCitations(text) {
+        // Split content and sources
+        const sourcesMatch = text.match(/\n\nSources:\n(.+)$/s);
+        if (!sourcesMatch) {
+          return text; // No sources found, return as is
+        }
+
+        const mainContent = text.replace(/\n\nSources:\n.+$/s, '');
+        const sourcesSection = sourcesMatch[1];
+
+        // Parse sources into structured format
+        const sources = [];
+        const sourceLines = sourcesSection.split('\n').filter(line => line.trim());
+        sourceLines.forEach(line => {
+          const match = line.match(/\[(\d+)\]\s*(.+?)\s*-\s*(.+)$/);
+          if (match) {
+            const [, num, title, url] = match;
+            sources.push({ num, title, url });
+          }
+        });
+
+        // Create formatted HTML
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'chat-content';
+        
+        // Add main content with citation links
+        let formattedContent = mainContent;
+        sources.forEach(source => {
+          const citationRegex = new RegExp(`\\[${source.num}\\]`, 'g');
+          formattedContent = formattedContent.replace(citationRegex, 
+            `<sup><a href="${source.url}" data-external class="citation-link">${source.num}</a></sup>`
+          );
+        });
+        
+        contentDiv.innerHTML = formattedContent;
+
+        // Add sources section
+        if (sources.length > 0) {
+          const sourcesDiv = document.createElement('div');
+          sourcesDiv.className = 'sources-section';
+          sourcesDiv.innerHTML = '<h4>Sources:</h4>';
+          
+          sources.forEach(source => {
+            const sourceItem = document.createElement('div');
+            sourceItem.className = 'source-item';
+            sourceItem.innerHTML = `
+              <span class="source-number">${source.num}</span>
+              <a href="${source.url}" data-external class="source-link">${source.title}</a>
+            `;
+            sourcesDiv.appendChild(sourceItem);
+          });
+          
+          contentDiv.appendChild(sourcesDiv);
+        }
+
+        return contentDiv;
+      }
+
+      // Handle form submission
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (isWaiting) return; // Prevent double submit
+        const prompt = input.value.trim();
+        if (!prompt) return;
+
+        // Hide welcome message on first interaction
+        if (welcomeMessage && welcomeMessage.style.display !== 'none') {
+          welcomeMessage.style.display = 'none';
+        }
+
+        // Add user message with avatar and bubble
+        const userMessage = document.createElement('div');
+        userMessage.className = 'chat-message user';
+        const userAvatar = document.createElement('img');
+        userAvatar.src = './src/assets/hari_profile.jpg';
+        userAvatar.className = 'chat-avatar';
+        const userBubble = document.createElement('div');
+        userBubble.className = 'chat-bubble';
+        userBubble.textContent = prompt;
+        userMessage.appendChild(userAvatar);
+        userMessage.appendChild(userBubble);
+        chatContainer.appendChild(userMessage);
+
+        // Clear and disable input
+        input.value = '';
+        input.style.height = 'auto';
+        input.disabled = true;
+        sendButton.disabled = false;
+        isWaiting = true;
+        sendIcon.style.display = 'none';
+        stopIcon.style.display = '';
+
+        // Add AI thinking message with avatar and bubble
+        const aiMessage = document.createElement('div');
+        aiMessage.className = 'chat-message ai';
+        const aiAvatar = document.createElement('img');
+        aiAvatar.src = './src/assets/thoth_logo_chat.png';
+        aiAvatar.className = 'chat-avatar';
+        const aiBubble = document.createElement('div');
+        aiBubble.className = 'chat-bubble';
+        aiBubble.innerHTML = '<span style="opacity: 0.7;">Thinking...</span>';
+        aiMessage.appendChild(aiAvatar);
+        aiMessage.appendChild(aiBubble);
+        chatContainer.appendChild(aiMessage);
+
+        // Scroll to bottom
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        abortController = new AbortController();
+        let result = '';
+        try {
+          result = await sendPromptWithMemory(prompt, chatHistory, abortController.signal);
+          chatHistory += `User: ${prompt}\nThoth: ${result}\n\n`;
+          const formatted = formatResponseWithCitations(result);
+          if (formatted instanceof HTMLElement) {
+            aiBubble.innerHTML = '';
+            aiBubble.appendChild(formatted);
+          } else {
+            aiBubble.textContent = formatted;
+          }
+        } catch (error) {
+          if (error.name === 'AbortError') {
+            aiBubble.innerHTML = '<span style="color: var(--error-color);">Stopped.</span>';
+          } else {
+            aiBubble.innerHTML = `<span style=\"color: var(--error-color);\">Sorry, I encountered an error: ${error.message}</span>`;
+          }
+        } finally {
+          input.disabled = false;
+          sendButton.disabled = false;
+          isWaiting = false;
+          sendIcon.style.display = '';
+          stopIcon.style.display = 'none';
+          input.focus();
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+          abortController = null;
+        }
+      });
+
+      // Stop button click
+      sendButton.addEventListener('click', (e) => {
+        if (isWaiting && abortController) {
+          e.preventDefault();
+          abortController.abort();
+        }
+      });
+
+      // Handle Enter key (Shift+Enter for new line)
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          form.dispatchEvent(new Event('submit'));
+        }
+      });
+
+      // Open all links with data-external in the user's default browser (Electron)
+      document.addEventListener('click', function(e) {
+        const target = e.target;
+        if (target.tagName === 'A' && target.hasAttribute('data-external')) {
+          e.preventDefault();
+          // Use Electron shell if available
+          if (window.require) {
+            try {
+              const { shell } = window.require('electron');
+              shell.openExternal(target.href);
+              return;
+            } catch (err) {}
+          }
+          // Fallback to window.open for web
+          window.open(target.href, '_blank', 'noopener');
+        }
+      });
+    </script>
+  </body>
+</html>
