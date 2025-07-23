@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
     title="Thoth Backend API",
     description="A RAG system with web search using Tavily API and Pinecone vector DB",
-    version="1.0.0"
+    version="1.0.0" 
 )
 
 # Add CORS middleware to allow requests from the frontend
