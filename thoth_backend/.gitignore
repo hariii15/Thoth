@@ -63,3 +63,4 @@ db.sqlite3
 .ipynb_checkpoints/
 
 credentials.json
+token.json
