@@ -11,13 +11,13 @@ import re
 import json
 import dateutil.parser
 from tools import (
-    web_search_tool, 
-    load_profile_tool, 
-    list_directory_tool, 
-    read_file_tool, 
-    create_directory_tool, 
-    get_system_usage_tool, 
-    open_application_tool, 
+    web_search_tool,
+    load_profile_tool,
+    list_directory_tool,
+    read_file_tool,
+    create_directory_tool,
+    get_system_usage_tool,
+    open_application_tool,
     search_wikipedia_tool,
     list_calendar_events,
     create_calendar_event,
@@ -53,11 +53,11 @@ def create_calendar_event_wrapper(action_input):
                     return json.dumps({"error": "Invalid input format. Expected: summary, start_time_iso, end_time_iso"})
         else:
             return json.dumps({"error": "Invalid input format"})
-        
+
         # Validate required fields
         if not summary or not start_time or not end_time:
             return json.dumps({"error": "Missing required fields: summary, start_time_iso, end_time_iso"})
-        
+
         # Try to parse dates to ensure valid format
         try:
             start_time_iso = dateutil.parser.parse(start_time).isoformat()
@@ -65,10 +65,10 @@ def create_calendar_event_wrapper(action_input):
         except:
             start_time_iso = start_time
             end_time_iso = end_time
-        
+
         # Call the actual function
         return create_calendar_event(summary, start_time_iso, end_time_iso, description)
-        
+
     except Exception as e:
         return json.dumps({"error": str(e)})
 

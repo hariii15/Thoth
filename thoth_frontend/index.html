@@ -8,15 +8,25 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&family=Smooch+Sans:wght@300&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Prism.js for code syntax highlighting - Fixed CDN setup -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   </head>
   <body>
     <div class="ai-agent-container">
       <div class="ai-agent-card">
-        
+
         <!-- Welcome message -->
         <div id="welcomeMessage" class="welcome-message">
           <img src="./src/assets/Adobe Express - file.png" alt="Thoth Logo" class="welcome-logo" />
-          Welcome Hari
         </div>
 
         <!-- Chat container -->
@@ -26,12 +36,12 @@
         <form id="aiForm" class="ai-form">
           <!-- Use Gemini-style input container -->
           <div class="chat-input-container">
-            <textarea 
-              id="promptInput" 
-              class="chat-textarea" 
-              placeholder="Ask Thoth" 
+            <textarea
+              id="promptInput"
+              class="chat-textarea"
+              placeholder="Ask Thoth"
               rows="1"
-              autofocus 
+              autofocus
             ></textarea>
             <button type="submit" class="send-button" id="sendButton">
               <svg id="sendIcon" viewBox="0 0 24 24" fill="currentColor">
@@ -41,7 +51,12 @@
                 <rect x="6" y="6" width="12" height="12" rx="3"/>
               </svg>
             </button>
-            <div class="icon-row"></div>
+            <!-- Coding button -->
+            <button type="button" class="coding-button" id="codingButton" title="Get coding help">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0L19.2 12l-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>
+              </svg>
+            </button>
           </div>
         </form>
       </div>
@@ -68,12 +83,245 @@
         this.style.height = Math.min(this.scrollHeight, 200) + 'px';
       });
 
-      // Function to format citations in Perplexity style
+      // Initialize coding mode state
+      form.dataset.codingMode = 'false';
+
+      // Coding button click - fixed toggle functionality
+      document.getElementById('codingButton').addEventListener('click', () => {
+        const codingButton = document.getElementById('codingButton');
+        
+        // Debug: Check current state
+        console.log('Current coding mode:', form.dataset.codingMode);
+        
+        // Toggle the state
+        if (form.dataset.codingMode === 'true') {
+          // Turn OFF coding mode
+          console.log('Turning OFF coding mode');
+          form.dataset.codingMode = 'false';
+          codingButton.style.background = 'rgba(96, 165, 250, 0.2)';
+          codingButton.style.borderColor = 'rgba(96, 165, 250, 0.3)';
+          codingButton.style.opacity = '0.8';
+          codingButton.title = 'Get coding help';
+          input.placeholder = 'Ask Thoth';
+          
+          // Remove any template text if it exists
+          if (input.value.startsWith('Explain how to implement')) {
+            input.value = '';
+          }
+        } else {
+          // Turn ON coding mode
+          console.log('Turning ON coding mode');
+          form.dataset.codingMode = 'true';
+          codingButton.style.background = 'rgba(96, 165, 250, 0.4)';
+          codingButton.style.borderColor = 'var(--accent-color)';
+          codingButton.style.opacity = '1';
+          codingButton.title = 'Coding mode ON - Click to turn off';
+          input.placeholder = 'Ask for coding help...';
+          
+          // Only add template if input is empty
+          if (!input.value.trim()) {
+            input.value = 'Explain how to implement ';
+            input.setSelectionRange(input.value.length, input.value.length);
+          }
+        }
+        
+        console.log('New coding mode:', form.dataset.codingMode);
+        input.focus();
+      });
+
+      // Function to format GitHub PR responses
+      function formatGitHubResponse(text) {
+        try {
+          // Try to parse as JSON to check if it's structured GitHub data
+          const parsed = JSON.parse(text);
+
+          if (parsed.type === 'github_pr_list' && parsed.data && parsed.data.pull_requests) {
+            const data = parsed.data;
+            const analysis = parsed.analysis || '';
+
+            // Create formatted GitHub PR list
+            const container = document.createElement('div');
+            container.className = 'github-pr-container';
+
+            // Header
+            const header = document.createElement('div');
+            header.className = 'github-pr-header';
+            header.innerHTML = `
+              <h3>📋 ${data.state} Pull Requests for ${data.repository}</h3>
+              <span class="pr-count">${data.count} PRs found</span>
+            `;
+            container.appendChild(header);
+
+            // PR List
+            const prList = document.createElement('div');
+            prList.className = 'github-pr-list';
+
+            data.pull_requests.forEach(pr => {
+              const prItem = document.createElement('div');
+              prItem.className = 'github-pr-item';
+
+              const createdDate = new Date(pr.created).toLocaleDateString();
+
+              prItem.innerHTML = `
+                <div class="pr-number">#${pr.number}</div>
+                <div class="pr-content">
+                  <div class="pr-title">
+                    <a href="${pr.url}" data-external>${pr.title}</a>
+                  </div>
+                  <div class="pr-meta">
+                    <span class="pr-author">by ${pr.by}</span>
+                    <span class="pr-date">• ${createdDate}</span>
+                  </div>
+                </div>
+                <div class="pr-status ${pr.state}">${pr.state}</div>
+              `;
+
+              prList.appendChild(prItem);
+            });
+
+            container.appendChild(prList);
+
+            // AI Analysis
+            if (analysis) {
+              const analysisSection = document.createElement('div');
+              analysisSection.className = 'github-analysis';
+              analysisSection.innerHTML = `
+                <h4>🤖 AI Analysis</h4>
+                <div class="analysis-content">${analysis}</div>
+              `;
+              container.appendChild(analysisSection);
+            }
+
+            return container;
+          }
+        } catch (e) {
+          // Not JSON or not GitHub PR data, return as regular text
+        }
+
+        return null;
+      }
+
+      // Function to format coding responses with syntax highlighting
+      function formatCodingResponse(text) {
+        try {
+          const parsed = JSON.parse(text);
+          
+          if (parsed.type === 'coding_response') {
+            const container = document.createElement('div');
+            container.className = 'coding-response-container';
+            
+            // Main content
+            if (parsed.main_content) {
+              const contentDiv = document.createElement('div');
+              contentDiv.className = 'coding-main-content';
+              contentDiv.innerHTML = parsed.main_content.replace(/\n/g, '<br>');
+              container.appendChild(contentDiv);
+            }
+            
+            // Code blocks with syntax highlighting
+            if (parsed.code_blocks && parsed.code_blocks.length > 0) {
+              parsed.code_blocks.forEach((block, index) => {
+                const codeContainer = document.createElement('div');
+                codeContainer.className = 'code-block-container';
+                
+                // Code header with language
+                const codeHeader = document.createElement('div');
+                codeHeader.className = 'code-block-header';
+                codeHeader.innerHTML = `
+                  <span class="code-language">${block.language}</span>
+                  <button class="copy-code-btn" onclick="copyCodeToClipboard('code-block-${index}')">
+                    Copy
+                  </button>
+                `;
+                codeContainer.appendChild(codeHeader);
+                
+                // Code content with Prism.js highlighting
+                const codeElement = document.createElement('pre');
+                codeElement.className = `thoth-code-block language-${block.language}`;
+                const codeContent = document.createElement('code');
+                codeContent.className = `language-${block.language}`;
+                codeContent.id = `code-block-${index}`;
+                codeContent.textContent = block.code;
+                codeElement.appendChild(codeContent);
+                codeContainer.appendChild(codeElement);
+                
+                container.appendChild(codeContainer);
+              });
+              
+              // Trigger Prism.js highlighting after adding to DOM
+              setTimeout(() => {
+                if (window.Prism) {
+                  window.Prism.highlightAll();
+                }
+              }, 10);
+            }
+            
+            return container;
+          }
+        } catch (e) {
+          // Not a coding response, return null
+        }
+        
+        return null;
+      }
+
+      // Function to copy code to clipboard
+      window.copyCodeToClipboard = function(codeId) {
+        const codeElement = document.getElementById(codeId);
+        if (codeElement) {
+          const textArea = document.createElement('textarea');
+          textArea.value = codeElement.textContent;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          
+          // Show feedback
+          const copyBtn = codeElement.parentElement.parentElement.querySelector('.copy-code-btn');
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = 'Copied!';
+          copyBtn.style.color = 'var(--success-color)';
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+            copyBtn.style.color = '';
+          }, 2000);
+        }
+      };
+
+      // Main formatting function - handles all response types
       function formatResponseWithCitations(text) {
-        // Split content and sources
+        // First check if it's a coding response (JSON)
+        const codingFormatted = formatCodingResponse(text);
+        if (codingFormatted) {
+          return codingFormatted;
+        }
+        
+        // Then check if it's GitHub PR data
+        const githubFormatted = formatGitHubResponse(text);
+        if (githubFormatted) {
+          return githubFormatted;
+        }
+
+        // Check if it's educational/markdown text content
+        // Look for markdown indicators: headers (#), code blocks (```), or bold/italic text
+        if (text.includes('# ') || text.includes('## ') || text.includes('### ') || 
+            text.includes('```') || text.includes('**') || text.includes('`') ||
+            !text.includes('\n\nSources:\n')) {
+          const educationalFormatted = formatEducationalText(text);
+          if (educationalFormatted) {
+            return educationalFormatted;
+          }
+        }
+
+        // Split content and sources for citation-based responses
         const sourcesMatch = text.match(/\n\nSources:\n(.+)$/s);
         if (!sourcesMatch) {
-          return text; // No sources found, return as is
+          // No sources found, but might still be markdown - try educational formatting
+          const educationalFormatted = formatEducationalText(text);
+          if (educationalFormatted) {
+            return educationalFormatted;
+          }
+          return text; // Return as plain text if no formatting detected
         }
 
         const mainContent = text.replace(/\n\nSources:\n.+$/s, '');
@@ -93,16 +341,16 @@
         // Create formatted HTML
         const contentDiv = document.createElement('div');
         contentDiv.className = 'chat-content';
-        
+
         // Add main content with citation links
         let formattedContent = mainContent;
         sources.forEach(source => {
           const citationRegex = new RegExp(`\\[${source.num}\\]`, 'g');
-          formattedContent = formattedContent.replace(citationRegex, 
+          formattedContent = formattedContent.replace(citationRegex,
             `<sup><a href="${source.url}" data-external class="citation-link">${source.num}</a></sup>`
           );
         });
-        
+
         contentDiv.innerHTML = formattedContent;
 
         // Add sources section
@@ -110,7 +358,7 @@
           const sourcesDiv = document.createElement('div');
           sourcesDiv.className = 'sources-section';
           sourcesDiv.innerHTML = '<h4>Sources:</h4>';
-          
+
           sources.forEach(source => {
             const sourceItem = document.createElement('div');
             sourceItem.className = 'source-item';
@@ -120,11 +368,93 @@
             `;
             sourcesDiv.appendChild(sourceItem);
           });
-          
+
           contentDiv.appendChild(sourcesDiv);
         }
 
         return contentDiv;
+      }
+
+      // Function to format educational text responses with proper HTML structure
+      function formatEducationalText(text) {
+        // Check if it's already a structured response (JSON)
+        try {
+          const parsed = JSON.parse(text);
+          if (parsed.type === 'coding_response') {
+            return null; // Let the coding response formatter handle this
+          }
+        } catch (e) {
+          // Not JSON, continue with text formatting
+        }
+
+        // Create a container for the educational content
+        const container = document.createElement('div');
+        container.className = 'coding-response-container';
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'coding-main-content';
+        
+        // Process markdown-style formatting
+        let processedHTML = text;
+        
+        // Handle code blocks first (```)
+        processedHTML = processedHTML.replace(/```(\w+)?\n([\s\S]*?)\n```/g, (match, language, code) => {
+          const lang = language || 'text';
+          const codeId = `code-block-${Math.random().toString(36).substr(2, 9)}`;
+          return `
+            <div class="code-block-container">
+              <div class="code-block-header">
+                <span class="code-language">${lang}</span>
+                <button class="copy-code-btn" onclick="copyCodeToClipboard('${codeId}')">Copy</button>
+              </div>
+              <pre class="thoth-code-block language-${lang}">
+                <code class="language-${lang}" id="${codeId}">${code.trim()}</code>
+              </pre>
+            </div>
+          `;
+        });
+        
+        // Handle inline code (`)
+        processedHTML = processedHTML.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+        
+        // Handle headers
+        processedHTML = processedHTML.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+        processedHTML = processedHTML.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+        processedHTML = processedHTML.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+        
+        // Handle bold text
+        processedHTML = processedHTML.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        
+        // Handle italic text
+        processedHTML = processedHTML.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        
+        // Handle line breaks and paragraphs
+        processedHTML = processedHTML.replace(/\n\n+/g, '</p><p>');
+        processedHTML = processedHTML.replace(/\n/g, '<br>');
+        
+        // Wrap in paragraphs if not already wrapped
+        if (!processedHTML.startsWith('<h') && !processedHTML.startsWith('<div')) {
+          processedHTML = '<p>' + processedHTML + '</p>';
+        }
+        
+        // Fix any double paragraph tags
+        processedHTML = processedHTML.replace(/<p><\/p>/g, '');
+        processedHTML = processedHTML.replace(/<p>(<h[1-6])/g, '$1');
+        processedHTML = processedHTML.replace(/(<\/h[1-6]>)<\/p>/g, '$1');
+        processedHTML = processedHTML.replace(/<p>(<div)/g, '$1');
+        processedHTML = processedHTML.replace(/(<\/div>)<\/p>/g, '$1');
+        
+        contentDiv.innerHTML = processedHTML;
+        container.appendChild(contentDiv);
+        
+        // Trigger syntax highlighting after DOM insertion
+        setTimeout(() => {
+          if (window.Prism) {
+            window.Prism.highlightAllUnder(container);
+          }
+        }, 100);
+        
+        return container;
       }
 
       // Handle form submission
@@ -133,6 +463,18 @@
         if (isWaiting) return; // Prevent double submit
         const prompt = input.value.trim();
         if (!prompt) return;
+
+        // Check if we're in coding mode
+        const isCodingMode = form.dataset.codingMode === 'true';
+        
+        // Reset coding mode after use
+        if (isCodingMode) {
+          form.dataset.codingMode = 'false';
+          const codingButton = document.getElementById('codingButton');
+          codingButton.style.background = '';
+          codingButton.style.borderColor = '';
+          input.placeholder = 'Ask Thoth';
+        }
 
         // Hide welcome message on first interaction
         if (welcomeMessage && welcomeMessage.style.display !== 'none') {
@@ -169,7 +511,7 @@
         aiAvatar.className = 'chat-avatar';
         const aiBubble = document.createElement('div');
         aiBubble.className = 'chat-bubble';
-        aiBubble.innerHTML = '<span style="opacity: 0.7;">Thinking...</span>';
+        aiBubble.innerHTML = `<span style="opacity: 0.7;">${isCodingMode ? 'Analyzing code...' : 'Thinking...'}</span>`;
         aiMessage.appendChild(aiAvatar);
         aiMessage.appendChild(aiBubble);
         chatContainer.appendChild(aiMessage);
@@ -180,7 +522,8 @@
         abortController = new AbortController();
         let result = '';
         try {
-          result = await sendPromptWithMemory(prompt, chatHistory, abortController.signal);
+          // Pass coding mode to the API
+          result = await sendPromptWithMemory(prompt, chatHistory, abortController.signal, isCodingMode);
           chatHistory += `User: ${prompt}\nThoth: ${result}\n\n`;
           const formatted = formatResponseWithCitations(result);
           if (formatted instanceof HTMLElement) {
