@@ -1,0 +1,20 @@
+# Ignore compiled Python files
+__pycache__/
+
+# Ignore virtual environments
+.venv/
+env/
+
+# Ignore sensitive files and configuration
+.env
+credentials.json
+token.json
+*.code-workspace
+
+# Ignore Git-related files
+.git/
+.gitignore
+
+# You can also ignore build artifacts if they exist
+dist/
+build/
