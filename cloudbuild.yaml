@@ -3,8 +3,8 @@ steps:
   - name: 'gcr.io/k8s-skaffold/pack'
     args:
       - 'build'
-      # Image path with your specific Project ID. The $SHORT_SHA must remain a variable.
-      - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$SHORT_SHA'
+      # FIXED: Using $BUILD_ID instead of $SHORT_SHA for a reliable tag
+      - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
       - '--builder=gcr.io/buildpacks/builder:latest'
       - '--path=.'
     id: 'Build'
@@ -13,31 +13,31 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
-      - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$SHORT_SHA'
+      - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
     id: 'Push'
 
   # Step 3: Deploy the container image to Cloud Run
   - name: 'gcr.io/google-appengine/exec-wrapper'
     args:
       - '-i'
-      - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$SHORT_SHA'
+      - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
       - '-s'
-      - 'thoth:latest' # Hardcoded service name and tag
+      - 'thoth:latest'
       - '--'
       - 'gcloud'
       - 'run'
       - 'deploy'
-      - 'thoth' # Hardcoded service name
+      - 'thoth'
       - '--platform=managed'
-      - '--image=asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$SHORT_SHA'
+      - '--image=asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
       - '--region=asia-south2'
       - '--allow-unauthenticated'
-      - '--project=thoth-466511' # Hardcoded project ID
+      - '--project=thoth-466511'
     id: 'Deploy'
 
 # Store the image in Artifact Registry
 images:
-  - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$SHORT_SHA'
+  - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
 
 options:
   logging: CLOUD_LOGGING_ONLY
