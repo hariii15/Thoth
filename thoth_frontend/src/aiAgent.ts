@@ -1,4 +1,11 @@
-// src/aiAgent.ts
+// Configuration - Access environment variable through Vite's define
+declare const __VITE_BACKEND_URL__: string;
+
+const CONFIG = {
+  BACKEND_URL: (typeof __VITE_BACKEND_URL__ !== 'undefined') 
+    ? __VITE_BACKEND_URL__ 
+    : 'https://thoth-510062880720.asia-south2.run.app'
+};
 
 interface MemoryInfo {
   should_save_memory: boolean;
@@ -124,7 +131,11 @@ async function showMemoryConfirmationDialog(summary: string): Promise<boolean> {
  */
 async function storeMemory(summary: string): Promise<boolean> {
   try {
-    const res = await fetch('http://localhost:8000/store_memory', {
+    const backendUrl = CONFIG.BACKEND_URL;
+    console.log(backendUrl)
+    console.log('🔗 Attempting to store memory at:', backendUrl);
+    
+    const res = await fetch(`${backendUrl}/store_memory`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -149,7 +160,13 @@ async function storeMemory(summary: string): Promise<boolean> {
 export async function sendPromptWithMemory(prompt: string, chatHistory: string = "", signal?: AbortSignal, isCodingRequest: boolean = false): Promise<string> {
   try {
     console.log('Sending prompt with collaborative agent:', prompt, 'coding:', isCodingRequest);
-    const res = await fetch('http://localhost:8000/collaborative', {
+    const backendUrl = CONFIG.BACKEND_URL;
+    console.log('🔗 Using backend URL:', backendUrl);
+    
+    // Add connectivity check
+    console.log('🔍 Testing backend connectivity...');
+    
+    const res = await fetch(`${backendUrl}/collaborative`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -160,7 +177,12 @@ export async function sendPromptWithMemory(prompt: string, chatHistory: string =
       signal
     });
     
-    console.log('Response status:', res.status);
+    if (!res.ok) {
+      console.error(`❌ Backend responded with status ${res.status}: ${res.statusText}`);
+      throw new Error(`Backend error: ${res.status} ${res.statusText}`);
+    }
+    
+    console.log('✅ Backend connection successful. Response status:', res.status);
     const data: CollaborativeResponse = await res.json();
     console.log('Collaborative response data:', data);
     console.log('Routing decision:', data.routing_decision);
@@ -185,6 +207,34 @@ export async function sendPromptWithMemory(prompt: string, chatHistory: string =
     if (err.name === 'AbortError') {
       throw err;
     }
+    
+    // Enhanced error logging for connection issues
+    if (err.message.includes('Failed to fetch') || err.message.includes('ERR_CONNECTION_REFUSED')) {
+      console.error('🚨 Backend connection failed!');
+      console.error('🔗 Attempted URL:', CONFIG.BACKEND_URL);
+      console.error('💡 This usually means:');
+      console.error('   - Backend server is not running');
+      console.error('   - Wrong backend URL configured');
+      console.error('   - Network connectivity issues');
+      console.error('   - CORS issues');
+      
+      return `❌ **Backend Connection Failed**
+
+The frontend cannot connect to the backend server at: \`${CONFIG.BACKEND_URL}\`
+
+**Possible causes:**
+- Backend server is not running
+- Incorrect backend URL configuration
+- Network connectivity issues
+- CORS policy blocking the request
+
+**Debug info:**
+- Error: ${err.message}
+- Backend URL: ${CONFIG.BACKEND_URL}
+
+Please check that the backend server is running and accessible.`;
+    }
+    
     console.error('Error in sendPromptWithMemory:', err);
     return 'Error: ' + err.message;
   }
