@@ -15,11 +15,11 @@
     --primary-color-light: #3b82f6; /* Lighter blue for hover states */
     --primary-color-dark: #1e40af; /* Darker blue for active states */
 
-    /* Dark Theme Color Palette - Even darker and more modern */
-    --background-color: #0a0a0f; /* Deeper, richer dark background */
-    --surface-color: #15151c; /* Slightly lighter for cards */
-    --surface-hover: #232336; /* For hover states */
-    --border-color: #232336; /* Subtle border color */
+    /* Modern Minimal Dark Theme - Clean and subtle */
+    --background-color: #0f0f0f; /* Deep minimal black */
+    --surface-color: #1a1a1a; /* Subtle dark surface */
+    --surface-hover: #252525; /* Gentle hover state */
+    --border-color: #2a2a2a; /* Minimal border */
 
     /* Accent & Utility Colors */
     --accent-color: #60a5fa; /* Modern blue accent */
@@ -27,10 +27,10 @@
     --error-color: #f85149;
     --warning-color: #d29922;
 
-    /* Text Colors for Dark Theme */
-    --text-primary: #e5e7eb; /* Soft white for primary text */
-    --text-secondary: #7d8590;
-    --text-tertiary: #484f58;
+    /* Text Colors for Dark Theme - Better contrast */
+    --text-primary: #f5f5f5; /* Clean white for primary text */
+    --text-secondary: #a0a0a0; /* Subtle gray for secondary text */
+    --text-tertiary: #6a6a6a; /* Muted gray for tertiary text */
     --text-on-primary: #ffffff;
 
     /* Font & Typography - Claude-inspired */
@@ -473,77 +473,91 @@ a:hover {
     background: linear-gradient(transparent, var(--background-color) 20%);
 }
 
-.ai-input-container {
+.chat-input-container {
     max-width: 800px;
     margin: 0 auto;
     position: relative;
 }
 
-.ai-input {
+.chat-textarea {
     width: 100%;
     padding: 1.25rem 3.5rem 1.25rem 1.5rem; /* increased vertical and horizontal padding */
     font-size: 1.1rem; /* slightly larger font */
+    background-color: transparent;
     line-height: 1.6;
-    background: #3b3b3b; /* Subtle gray background */
     color: var(--text-primary);
-    border: 1px solid var(--border-color); /* subtle border */
-    border-radius: 28px; /* more rounded corners */
-    box-shadow: inset 0 1px 6px rgba(0, 0, 0, 0.3); /* subtle inset shadow */
-    min-height: 48px; /* increased height */
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Very subtle light border like Gemini */
+    border-radius: 19px; /* Gemini-style rounded corners */
+    box-shadow: none; /* Remove inset shadow for cleaner look */
+    min-height: 92px; /* Slightly taller like Gemini */
     max-height: 250px;
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
     resize: none;
     overflow-y: hidden;
+    font-family: var(--font-family-sans);
 }
 
-.ai-input:focus {
+.chat-textarea:focus {
     outline: none;
-    border-color: var(--border-color);
-    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.24); /* Slightly more visible on fo
+    ; /* Slightly lighter on focus */
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08); /* Very subtle glow */
+}
+
+.chat-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.6); /* Gemini-style placeholder */
+    font-size: 1.05rem;
 }
 
 /* Send button */
 .send-button {
     position: absolute;
-    right: 8px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    width: 40px; /* larger click area */
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background-color: gray; /* theme accent */
+    background: #6b7280; /* Single solid color instead of gradient */
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-    opacity: 0.9;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    opacity: 1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .send-button:hover {
-    transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+    background: #8b8b8b; /* Slightly lighter gray on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .send-button:active {
-    transform: translateY(-50%) scale(0.95);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50%) scale(0.98);
+    background: #5b5b5b; /* Slightly darker on click */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .send-button:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
     transform: translateY(-50%) scale(1);
     box-shadow: none;
+    background: #4b5563;
 }
 
 .send-button svg {
-    width: 20px; /* larger icon */
-    height: 20px;
-    color: var(--text-on-primary);
+    width: 18px;
+    height: 18px;
+    color: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.send-button:hover svg {
+    transform: translateX(1px);
 }
 
 /* Scrollbar styling */
@@ -680,7 +694,7 @@ a:hover {
   padding: 32px;
   max-width: 500px;
   width: 90%;
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.05);
   animation: slideUp 0.3s ease-out;
@@ -785,4 +799,582 @@ a:hover {
 
 .no-scrollbar::-webkit-scrollbar {
     display: none; /* Safari and Chrome */
+}
+
+/* -------------------------------------------------------------------
+   8. GitHub PR Components Styling
+   ------------------------------------------------------------------- */
+
+/* GitHub PR Container */
+.github-pr-container {
+  background: rgba(21, 21, 28, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* GitHub PR Header */
+.github-pr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.github-pr-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.pr-count {
+  background: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* GitHub PR List */
+.github-pr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Individual PR Item */
+.github-pr-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(35, 35, 54, 0.5);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.github-pr-item:hover {
+  background: rgba(35, 35, 54, 0.8);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* PR Number Badge */
+.pr-number {
+  background: var(--accent-color);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* PR Content */
+.pr-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.pr-title {
+  margin-bottom: 0.5rem;
+}
+
+.pr-title a {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.pr-title a:hover {
+  color: var(--accent-color);
+  text-decoration: underline;
+}
+
+.pr-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.pr-author {
+  font-weight: 500;
+}
+
+.pr-date {
+  opacity: 0.8;
+}
+
+/* PR Status Badge */
+.pr-status {
+  padding: 0.375rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pr-status.open {
+  background: rgba(63, 185, 80, 0.2);
+  color: #3fb950;
+  border: 1px solid rgba(63, 185, 80, 0.3);
+}
+
+.pr-status.closed {
+  background: rgba(248, 81, 73, 0.2);
+  color: #f85149;
+  border: 1px solid rgba(248, 81, 73, 0.3);
+}
+
+.pr-status.merged {
+  background: rgba(138, 43, 226, 0.2);
+  color: #a855f7;
+  border: 1px solid rgba(138, 43, 226, 0.3);
+}
+
+/* GitHub Analysis Section */
+.github-analysis {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(15, 15, 20, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.github-analysis h4 {
+  margin: 0 0 1rem 0;
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.analysis-content {
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Responsive Design for PR Items */
+@media (max-width: 768px) {
+  .github-pr-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .pr-number {
+    align-self: flex-start;
+  }
+
+  .pr-status {
+    align-self: flex-end;
+  }
+
+  .github-pr-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+/* -------------------------------------------------------------------
+   9. Coding Response Components Styling
+   ------------------------------------------------------------------- */
+
+/* Coding Response Container */
+.coding-response-container {
+  background: rgba(15, 15, 20, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Main content of coding response */
+.coding-main-content {
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+
+/* Code block container */
+.code-block-container {
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(10, 10, 15, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Code block header */
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(30, 30, 40, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code-language {
+  color: var(--accent-color);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.copy-code-btn {
+  background: rgba(96, 165, 250, 0.2);
+  color: var(--accent-color);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copy-code-btn:hover {
+  background: rgba(96, 165, 250, 0.3);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+/* Code block styling with syntax highlighting */
+.thoth-code-block {
+  background: var(--surface-color) !important;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.thoth-code-block code {
+  background: none !important;
+  padding: 1rem !important;
+  display: block;
+  color: #e1e1e6 !important;
+}
+
+/* Prism.js theme overrides for better dark mode */
+.code-block .token.comment,
+.code-block .token.prolog,
+.code-block .token.doctype,
+.code-block .token.cdata {
+  color: #6b7280 !important;
+}
+
+.code-block .token.punctuation {
+  color: #d1d5db !important;
+}
+
+.code-block .token.property,
+.code-block .token.tag,
+.code-block .token.constant,
+.code-block .token.symbol,
+.code-block .token.deleted {
+  color: #f87171 !important;
+}
+
+.code-block .token.boolean,
+.code-block .token.number {
+  color: #fbbf24 !important;
+}
+
+.code-block .token.selector,
+.code-block .token.attr-name,
+.code-block .token.string,
+.code-block .token.char,
+.code-block .token.builtin,
+.code-block .token.inserted {
+  color: #34d399 !important;
+}
+
+.code-block .token.operator,
+.code-block .token.entity,
+.code-block .token.url,
+.code-block .language-css .token.string,
+.code-block .style .token.string,
+.code-block .token.variable {
+  color: #60a5fa !important;
+}
+
+.code-block .token.atrule,
+.code-block .token.attr-value,
+.code-block .token.function,
+.code-block .token.class-name {
+  color: #a78bfa !important;
+}
+
+.code-block .token.keyword {
+  color: #f472b6 !important;
+}
+
+/* Coding button styling */
+.coding-button {
+  position: absolute;
+  right: 55px; /* Position next to send button */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(96, 165, 250, 0.2);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.coding-button:hover {
+  background: rgba(96, 165, 250, 0.3);
+  border-color: var(--accent-color);
+  transform: translateY(-50%) scale(1.05);
+  opacity: 1;
+}
+
+.coding-button:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+.coding-button svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-color);
+}
+
+/* -------------------------------------------------------------------
+   10. Academic/Educational Text Response Styling
+   ------------------------------------------------------------------- */
+
+/* Main content styling for educational responses */
+.coding-main-content {
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+  font-family: var(--font-family-sans);
+}
+
+/* Headers in educational content */
+.coding-main-content h1 {
+  color: var(--accent-color);
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 2rem 0 1rem 0;
+  border-bottom: 2px solid rgba(96, 165, 250, 0.3);
+  padding-bottom: 0.5rem;
+}
+
+.coding-main-content h2 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1.8rem 0 1rem 0;
+  position: relative;
+}
+
+.coding-main-content h2::before {
+  content: "📚";
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.coding-main-content h3 {
+  color: var(--accent-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.8rem 0;
+  position: relative;
+}
+
+.coding-main-content h3::before {
+  content: "▸";
+  color: var(--accent-color);
+  margin-right: 0.5rem;
+  font-weight: bold;
+}
+
+/* Paragraphs with better spacing */
+.coding-main-content p {
+  margin-bottom: 1.2rem;
+  text-align: justify;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+/* Emphasis and strong text */
+.coding-main-content strong {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.coding-main-content em {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Lists with better styling */
+.coding-main-content ul,
+.coding-main-content ol {
+  margin: 1rem 0 1.5rem 1.5rem;
+  padding: 0;
+}
+
+.coding-main-content li {
+  margin-bottom: 0.6rem;
+  line-height: 1.6;
+  position: relative;
+}
+
+.coding-main-content ul li::marker {
+  color: var(--accent-color);
+  font-size: 1.2em;
+}
+
+.coding-main-content ol li::marker {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* Nested lists */
+.coding-main-content li ul,
+.coding-main-content li ol {
+  margin: 0.5rem 0 0.5rem 1rem;
+}
+
+/* Quote-like styling for important concepts */
+.coding-main-content p:has(strong:first-child) {
+  background: rgba(96, 165, 250, 0.1);
+  border-left: 4px solid var(--accent-color);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+}
+
+/* Special styling for concept definitions */
+.coding-main-content p:contains("Think of") {
+  background: rgba(138, 43, 226, 0.1);
+  border-left: 4px solid #a855f7;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+}
+
+/* Section dividers */
+.coding-main-content hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-color), transparent);
+  margin: 2rem 0;
+}
+
+/* Inline code styling */
+.coding-main-content code {
+  background: rgba(96, 165, 250, 0.2);
+  color: var(--accent-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+/* Academic callout boxes */
+.coding-main-content blockquote {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid var(--warning-color);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Educational content sections with icons */
+.coding-main-content h2:contains("Overview")::before { content: "🎯"; }
+.coding-main-content h2:contains("Mental Model")::before { content: "🧠"; }
+.coding-main-content h2:contains("Implementation")::before { content: "⚙️"; }
+.coding-main-content h2:contains("Principles")::before { content: "📐"; }
+.coding-main-content h2:contains("Practice")::before { content: "💪"; }
+.coding-main-content h2:contains("Next Steps")::before { content: "🚀"; }
+.coding-main-content h2:contains("Why This Matters")::before { content: "💡"; }
+
+/* Numbered sections */
+.coding-main-content h3:contains("1.")::before { content: "①"; }
+.coding-main-content h3:contains("2.")::before { content: "②"; }
+.coding-main-content h3:contains("3.")::before { content: "③"; }
+.coding-main-content h3:contains("4.")::before { content: "④"; }
+.coding-main-content h3:contains("5.")::before { content: "⑤"; }
+
+/* Links in educational content */
+.coding-main-content a {
+  color: var(--accent-color);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--accent-color);
+  transition: all 0.2s ease;
+}
+
+.coding-main-content a:hover {
+  color: var(--primary-color-light);
+  border-bottom: 1px solid var(--primary-color-light);
+  background: rgba(96, 165, 250, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments for educational content */
+@media (max-width: 768px) {
+  .coding-main-content {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .coding-main-content h1 {
+    font-size: 1.5rem;
+  }
+  
+  .coding-main-content h2 {
+    font-size: 1.3rem;
+  }
+  
+  .coding-main-content h3 {
+    font-size: 1.1rem;
+  }
+  
+  .coding-main-content p:has(strong:first-child),
+  .coding-main-content blockquote {
+    padding: 0.8rem 1rem;
+    margin: 1rem 0;
+  }
 }

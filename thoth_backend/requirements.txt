@@ -1,10 +1,12 @@
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 python-dotenv==1.0.0
-pydantic==2.5.0
-langchain==0.1.0
-langchain-google-genai==1.0.1
-langchain-community==0.0.13
+pydantic
+langchain
+langchain-openai
+langchain-community
+langchain-core
+langgraph
 tavily-python==0.3.3
 psutil==5.9.6
 wikipedia-api==0.6.0
@@ -14,3 +16,6 @@ google-auth-oauthlib==1.1.0
 python-dateutil==2.8.2
 pinecone==4.0.0
 sentence-transformers==2.2.2
+PyGithub==1.59.1
+openai>=1.40.0
+requests==2.31.0 
