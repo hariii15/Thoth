@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(
     title="Thoth Backend API",
     description="A RAG system with web search using Tavily API and Pinecone vector DB",
-    version="1.0.0" 
+    version="1.0.0"
 )
 
 # Explicit list of allowed origins. Do NOT use "*" together with allow_credentials=True.
@@ -42,10 +42,10 @@ async def health_check():
     return {"status": "healthy", "service": "thoth-backend"}
 
 # Run the application
-if __name__ == "__main__":  
+if __name__ == "__main__":
     uvicorn.run(
         "main:app",
-        host="0.0.0.0",  
-        port=8000, 
+        host="0.0.0.0",
+        port=8000,
         reload=True  # Enable auto-reload during development
     )

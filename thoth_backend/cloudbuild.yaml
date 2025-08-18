@@ -1,0 +1,15 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build','-t','asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID','-f','Dockerfile','.']
+    id: 'Build'
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push','asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID']
+    id: 'Push'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: gcloud
+    args: ['run','deploy','thoth','--image=asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID','--region=asia-south2','--platform=managed','--allow-unauthenticated','--port=8000']
+    id: 'Deploy'
+images:
+  - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
+options:
+  logging: CLOUD_LOGGING_ONLY
