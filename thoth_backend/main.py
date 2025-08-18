@@ -11,15 +11,18 @@ app = FastAPI(
     version="1.0.0" 
 )
 
+# Explicit list of allowed origins. Do NOT use "*" together with allow_credentials=True.
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite dev server
+    "http://localhost:3000",  # Alternative dev server
+    # Add your deployed frontend origin(s) here, e.g.:
+    # "https://thoth-frontend.example.com",
+]
+
 # Add CORS middleware to allow requests from the frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",  # Vite dev server
-        "http://localhost:3000",  # Alternative dev server
-        "https://thoth-510062880720.asia-south2.run.app",  # Production backend
-        "*"  # Allow all origins for development (remove in production)
-    ],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
