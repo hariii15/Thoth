@@ -3,7 +3,6 @@ steps:
   - name: 'gcr.io/k8s-skaffold/pack'
     args:
       - 'build'
-      # FIXED: Using $BUILD_ID instead of $SHORT_SHA for a reliable tag
       - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
       - '--builder=gcr.io/buildpacks/builder:latest'
       - '--path=.'
@@ -21,8 +20,7 @@ steps:
     args:
       - '-i'
       - 'asia-south2-docker.pkg.dev/thoth-466511/cloud-run-source-deploy/thoth:$BUILD_ID'
-      - '-s'
-      - 'thoth:latest'
+      # REMOVED: The incorrect -s 'thoth:latest' flag has been deleted from here.
       - '--'
       - 'gcloud'
       - 'run'
