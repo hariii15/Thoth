@@ -12,7 +12,7 @@ Thoth is a personalized, desktop-native AI companion and development partner bui
 *   **System & Filesystem Tooling:** Allows Thoth to read files, view directory structures, inspect CPU/Memory/Disk utilization, and launch local software applications.
 *   **Google Calendar & Productivity Integration:** Accesses upcoming meetings, schedules events, and queries calendar details automatically.
 *   **Elegant Desktop Client:** Built with Electron, Vite, TypeScript, and a Gemini-inspired chat UI complete with responsive layouts, Markdown syntax support, and code copy capability.
-
+              
 ---
 
 ## 🗺️ System Flow & Architecture
