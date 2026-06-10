@@ -15,7 +15,7 @@ Thoth is a personalized, desktop-native AI companion and development partner bui
               
 ---
 
-## 🗺️ System Flow & Architecture
+## 🗺️ System Flow & Architecture            
 
 Thoth's backend processes queries through a centralized LangGraph workflow, routing questions to specialized agents and returning structured JSON payloads for the Electron frontend.
 
